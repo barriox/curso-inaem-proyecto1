@@ -19,9 +19,7 @@ total2.textContent = 0;
 let ended = false;
 let currentPlayer = player1;
 let sum = 0;
-let sum2 = 0;
-let hold1 = 0;
-let hold2 = 0;
+let holded = 0;
 //ROLL DICE, CURRENT AND PLAYER SWAP
 roll.addEventListener("click", function () {
   dice.classList.remove("hidden");
@@ -51,45 +49,42 @@ roll.addEventListener("click", function () {
       sum += number;
       current1.textContent = sum;
     } else {
-      sum2 += number;
-      current2.textContent = sum2;
+      sum += number;
+      current2.textContent = sum;
     }
   } else {
+    sum = 0;
     if (currentPlayer == player1) {
       currentPlayer = player2;
       player1.classList.remove("player--active");
       player2.classList.add("player--active");
       current1.textContent = 0;
-      sum = 0;
     } else {
       currentPlayer = player1;
       player2.classList.remove("player--active");
       player1.classList.add("player--active");
       current2.textContent = 0;
-      sum2 = 0;
     }
   }
 });
 
 //HOLD SCORE, ADD TO TOTAL
 hold.addEventListener("click", function () {
+  holded += sum;
   if (currentPlayer == player1) {
-    hold1 += sum;
-    total1.textContent = hold1;
-    sum = 0;
+    total1.textContent = holded;
     current1.textContent = 0;
+    if (holded >= 20) {
+      total1.classList.add("player--winner");
+      ended = true;
+    }
   } else {
-    hold2 += sum2;
-    total2.textContent = hold2;
-    sum2 = 0;
+    total2.textContent = holded;
     current1.textContent = 0;
-  }
-  if (hold1 >= 20) {
-    total1.classList.add("player--winner");
-    ended = true;
-  } else if (hold2 >= 20) {
-    total2.classList.add("player--winner");
-    ended = true;
+    if (holded >= 20) {
+      total2.classList.add("player--winner");
+      ended = true;
+    }
   }
   if (ended == true) {
     roll.disabled = true;
