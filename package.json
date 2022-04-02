@@ -1,6 +1,7 @@
 {
   "name": "curso-inaem-proyecto1",
   "version": "1.0.0",
+
   "description": "Pig game by Miguel Barrio",
   "main": "index.js",
   "scripts": {
