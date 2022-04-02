@@ -1,104 +1,71 @@
-'use strict';
+'use strict'
 
-const current1 = document.querySelector('#current--0');
-const total1 = document.querySelector('#score--0');
-const current2 = document.querySelector('#current--1');
-const total2 = document.querySelector('#score--1');
-const newgame = document.querySelector('.btn--new');
-const roll = document.querySelector('.btn--roll');
-const hold = document.querySelector('.btn--hold');
-const player1 = document.querySelector('.player--0');
-const player2 = document.querySelector('.player--1');
-const dice = document.querySelector('.dice');
-dice.classList.add('hidden');
-current1.textContent = 0;
-current2.textContent = 0;
-total1.textContent = 0;
-total2.textContent = 0;
+const current1 = document.querySelector('#current--0'),
+  total1 = document.querySelector('#score--0'),
+  current2 = document.querySelector('#current--1'),
+  total2 = document.querySelector('#score--1'),
+  newgame = document.querySelector('.btn--new'),
+  roll = document.querySelector('.btn--roll'),
+  hold = document.querySelector('.btn--hold'),
+  player1 = document.querySelector('.player--0'),
+  player2 = document.querySelector('.player--1'),
+  dice = document.querySelector('.dice')
 
-let ended = false;
-let currentPlayer = player1;
-let sum = 0;
-let sum2 = 0;
-let hold1 = 0;
-let hold2 = 0;
-// ROLL DICE, CURRENT AND PLAYER SWAP
+let ended, currentPlayer, sum, holded
+
+const init = function () {
+  player1.classList.add('player--active')
+  player2.classList.remove('player--active')
+  dice.classList.add('hidden'),
+    (current1.textContent = 0),
+    (current2.textContent = 0),
+    (total1.textContent = 0),
+    (total2.textContent = 0),
+    (ended = false),
+    (currentPlayer = 0),
+    (sum = 0),
+    (holded = [0, 0])
+}
+init()
+//ROLL DICE, CURRENT AND PLAYER SWAP
 roll.addEventListener('click', function () {
-  dice.classList.remove('hidden');
-  const number = Math.trunc(Math.random() * 6 + 1);
-  switch (number) {
-    case 1:
-      dice.src = 'dice-1.png';
-      break;
-    case 2:
-      dice.src = 'dice-2.png';
-      break;
-    case 3:
-      dice.src = 'dice-3.png';
-      break;
-    case 4:
-      dice.src = 'dice-4.png';
-      break;
-    case 5:
-      dice.src = 'dice-5.png';
-      break;
-    case 6:
-      dice.src = 'dice-6.png';
-      break;
-  }
-  if (number !== 1) {
-    if (currentPlayer === player1) {
-      sum += number;
-      current1.textContent = sum;
-    } else {
-      sum2 += number;
-      current2.textContent = sum2;
-    }
+  dice.classList.remove('hidden')
+  const number = Math.trunc(Math.random() * 6 + 1)
+  dice.src = `images/dice-${number}.png`
+  if (number != 1) {
+    sum += number
+    currentPlayer === 0
+      ? (current1.textContent = sum)
+      : (current2.textContent = sum)
   } else {
-    if (currentPlayer === player1) {
-      currentPlayer = player2;
-      player1.classList.remove('player--active');
-      player2.classList.add('player--active');
-      current1.textContent = 0;
-      sum = 0;
-    } else {
-      currentPlayer = player1;
-      player2.classList.remove('player--active');
-      player1.classList.add('player--active');
-      current2.textContent = 0;
-      sum2 = 0;
-    }
+    sum = 0
+    switchPlayer()
   }
-});
+})
+const switchPlayer = () => {
+  currentPlayer = 0 === currentPlayer ? 1 : 0
+  player1.classList.toggle('player--active')
+  player2.classList.toggle('player--active')
+  current1.textContent = 0
+  current2.textContent = 0
+}
 
-// HOLD SCORE, ADD TO TOTAL
+//HOLD SCORE, ADD TO TOTAL
 hold.addEventListener('click', function () {
-  if (currentPlayer === player1) {
-    hold1 += sum;
-    total1.textContent = hold1;
-    sum = 0;
-    current1.textContent = 0;
+  holded[currentPlayer] += sum
+  sum = 0
+  if (currentPlayer == 0) {
+    total1.textContent = holded[currentPlayer]
+    current1.textContent = 0
   } else {
-    hold2 += sum2;
-    total2.textContent = hold2;
-    sum2 = 0;
-    current1.textContent = 0;
+    total2.textContent = holded[currentPlayer]
+    current2.textContent = 0
   }
-  if (hold1 >= 20) {
-    total1.classList.add('player--winner');
-    ended = true;
-  } else if (hold2 >= 20) {
-    total2.classList.add('player--winner');
-    ended = true;
+  if (holded[currentPlayer] >= 100) {
+    currentPlayer == 0
+      ? total1.classList.add('player--winner')
+      : total2.classList.add('player--winner')
   }
-  if (ended === true) {
-    roll.disabled = true;
-    hold.disabled = true;
-    newgame.style.width = '300px';
-    newgame.style.fontWeight = '40px';
-  }
-});
-// NEW GAME
-newgame.addEventListener('click', function () {
-  window.location.reload();
-});
+})
+//NEW GAME
+newgame.addEventListener('click', init)
